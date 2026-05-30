@@ -42,9 +42,17 @@ export default async function Dashboard() {
                 <div key={req.id} className="bg-white rounded-lg border border-gray-200 p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium text-gray-900">{req.reason}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-gray-900">{req.reason}</p>
+                        {req.request_type === 'time_restriction' && (
+                          <span className="text-xs font-medium text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Restriction</span>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-600 mt-0.5">
-                        {req.start_date} – {req.end_date} · {req.num_days} day{req.num_days !== 1 ? 's' : ''}
+                        {req.request_type === 'time_restriction'
+                          ? <>{req.start_date} · {req.time_start} – {req.time_end}</>
+                          : <>{req.start_date} – {req.end_date} · {req.num_days} day{req.num_days !== 1 ? 's' : ''}</>
+                        }
                       </p>
                       <p className="text-xs text-gray-400 mt-1">
                         Submitted {new Date(req.created_at).toLocaleDateString()}

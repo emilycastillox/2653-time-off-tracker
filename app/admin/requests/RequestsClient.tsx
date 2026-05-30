@@ -78,13 +78,27 @@ export default function RequestsClient({ initialRequests }: { initialRequests: T
               <tbody className="divide-y divide-gray-100">
                 {requests.map((req) => (
                   <tr key={req.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-900">{req.employee_name}</td>
+                    <td className="px-4 py-3 font-medium text-gray-900">
+                      <div>{req.employee_name}</div>
+                      {req.request_type === 'time_restriction' && (
+                        <span className="text-xs font-medium text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Restriction</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{req.employee_position}</td>
                     <td className="px-4 py-3 text-gray-600">{req.reason}</td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                      {req.start_date} – {req.end_date}
+                      {req.request_type === 'time_restriction' ? (
+                        <div>
+                          <div>{req.start_date}</div>
+                          <div className="text-xs text-gray-400">{req.time_start} – {req.time_end}</div>
+                        </div>
+                      ) : (
+                        <>{req.start_date} – {req.end_date}</>
+                      )}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{req.num_days}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {req.request_type === 'time_restriction' ? '—' : req.num_days}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${STATUS_STYLES[req.status]}`}>
                         {req.status}

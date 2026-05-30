@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { UserButton } from '@clerk/nextjs'
+import { UserButton, useUser } from '@clerk/nextjs'
 
 export default function AdminNav() {
+  const { user } = useUser()
+
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -27,7 +29,12 @@ export default function AdminNav() {
             </Link>
           </nav>
         </div>
-        <UserButton />
+        <div className="flex items-center gap-3">
+          {user?.fullName && (
+            <span className="text-sm text-gray-600">Hello, <span className="font-medium text-gray-900">{user.fullName}</span></span>
+          )}
+          <UserButton />
+        </div>
       </div>
     </header>
   )
