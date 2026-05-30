@@ -9,7 +9,9 @@ export async function sendEmail(to: string | string[], subject: string, text: st
     return
   }
 
-  const mg = new Mailgun(FormData).client({ username: 'api', key })
+  const region = process.env.MAILGUN_REGION ?? 'us'
+  const url = region === 'eu' ? 'https://api.eu.mailgun.net' : 'https://api.mailgun.net'
+  const mg = new Mailgun(FormData).client({ username: 'api', key, url })
 
   return mg.messages.create(process.env.MAILGUN_DOMAIN!, {
     from: `2653 Legacy Place <noreply@${process.env.MAILGUN_DOMAIN}>`,

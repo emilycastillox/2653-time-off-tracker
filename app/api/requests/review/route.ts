@@ -3,6 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { sendEmail } from '@/lib/mailgun'
 
+function formatDate(dateStr: string): string {
+  // dateStr is "YYYY-MM-DD" — parse in local time to avoid UTC offset shifting the day
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+  })
+}
+
 export async function POST(request: NextRequest) {
   const { userId, sessionClaims } = await auth()
   if (!userId) return new NextResponse('Unauthorized', { status: 401 })
@@ -45,19 +53,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    if (action === 'approved') {
-      await sendEmail(
-        existing.employee_email,
-        'Your Time-Off Request Has Been Approved',
-        `Hi ${existing.employee_name}, your request for ${existing.start_date} – ${existing.end_date} has been approved. Enjoy your time off!`
-      )
-    } else {
-      await sendEmail(
-        existing.employee_email,
-        'Your Time-Off Request Has Been Denied',
-        `Hi ${existing.employee_name}, your request for ${existing.start_date} – ${existing.end_date} has been denied. Please reach out to management with any questions.`
-      )
-    }
+    const isRestriction = existing.request_type === 'time_restriction'
+    const dateLabel = isRestriction
+      ? formatDate(existing.start_date)
+      : existing.start_date === existing.end_date
+        ? formatDate(existing.start_date)
+        : `${formatDate(existing.start_date)} – ${formatDate(existing.end_date)}`
+
+    const actionWord = action === 'approved' ? 'approved' : 'denied'
+    const subject = action === 'approved'
+      ? 'Your Time-Off Request Has Been Approved'
+      : 'Your Time-Off Request Has Been Denied'
+
+    const body =
+      `Dear ${existing.employee_name},\n\n` +
+      `Your time off request for ${dateLabel} has been ${actionWord} by ${reviewerName}.\n\n` +
+      `Please reach out to Jess, Tara, or Quynh specifically for any additional questions.\n\n` +
+      `— 2653 Legacy Place`
+
+    await sendEmail(existing.employee_email, subject, body)
   } catch (e) {
     console.error('Mailgun error (non-fatal):', e)
   }
