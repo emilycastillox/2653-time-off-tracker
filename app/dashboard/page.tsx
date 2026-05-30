@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { createServerClient, type TimeOffRequest } from '@/lib/supabase'
+import { fmtDate } from '@/lib/utils'
 import RequestForm from './RequestForm'
 import DashboardHeader from './DashboardHeader'
 
@@ -50,12 +51,12 @@ export default async function Dashboard() {
                       </div>
                       <p className="text-sm text-gray-600 mt-0.5">
                         {req.request_type === 'time_restriction'
-                          ? <>{req.start_date} · {req.time_start} – {req.time_end}</>
-                          : <>{req.start_date} – {req.end_date} · {req.num_days} day{req.num_days !== 1 ? 's' : ''}</>
+                          ? <>{fmtDate(req.start_date)} · {req.time_start} – {req.time_end}</>
+                          : <>{fmtDate(req.start_date)} – {fmtDate(req.end_date)} · {req.num_days} day{req.num_days !== 1 ? 's' : ''}</>
                         }
                       </p>
                       <p className="text-xs text-gray-400 mt-1">
-                        Submitted {new Date(req.created_at).toLocaleDateString()}
+                        Submitted {new Date(req.created_at).toLocaleDateString('en-US')}
                       </p>
                     </div>
                     <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${STATUS_STYLES[req.status]}`}>

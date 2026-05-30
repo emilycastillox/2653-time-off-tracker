@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { TimeOffRequest } from '@/lib/supabase'
+import { fmtDate } from '@/lib/utils'
 
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -89,11 +90,11 @@ export default function RequestsClient({ initialRequests }: { initialRequests: T
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                       {req.request_type === 'time_restriction' ? (
                         <div>
-                          <div>{req.start_date}</div>
+                          <div>{fmtDate(req.start_date)}</div>
                           <div className="text-xs text-gray-400">{req.time_start} – {req.time_end}</div>
                         </div>
                       ) : (
-                        <>{req.start_date} – {req.end_date}</>
+                        <>{fmtDate(req.start_date)} – {fmtDate(req.end_date)}</>
                       )}
                     </td>
                     <td className="px-4 py-3 text-gray-600">
@@ -105,7 +106,7 @@ export default function RequestsClient({ initialRequests }: { initialRequests: T
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                      {new Date(req.created_at).toLocaleDateString()}
+                      {new Date(req.created_at).toLocaleDateString('en-US')}
                     </td>
                     <td className="px-4 py-3">
                       {req.status === 'pending' && (

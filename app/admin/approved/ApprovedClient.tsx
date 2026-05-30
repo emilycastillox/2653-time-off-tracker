@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { TimeOffRequest } from '@/lib/supabase'
+import { fmtDate } from '@/lib/utils'
 
 type View = 'calendar' | 'spreadsheet'
 
@@ -190,7 +191,7 @@ function SpreadsheetView({ requests }: { requests: TimeOffRequest[] }) {
                   </td>
                   <td className="px-4 py-3 text-gray-600">{req.reason}</td>
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                    {isRestriction ? req.start_date : `${req.start_date} – ${req.end_date}`}
+                    {isRestriction ? fmtDate(req.start_date) : `${fmtDate(req.start_date)} – ${fmtDate(req.end_date)}`}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {isRestriction && shorthand ? (

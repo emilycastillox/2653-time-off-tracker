@@ -4,11 +4,8 @@ import { createServerClient } from '@/lib/supabase'
 import { sendEmail } from '@/lib/mailgun'
 
 function formatDate(dateStr: string): string {
-  // dateStr is "YYYY-MM-DD" — parse in local time to avoid UTC offset shifting the day
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric',
-  })
+  const [y, m, d] = dateStr.split('-')
+  return `${m}/${d}/${y}`
 }
 
 export async function POST(request: NextRequest) {
@@ -69,7 +66,7 @@ export async function POST(request: NextRequest) {
       `Dear ${existing.employee_name},\n\n` +
       `Your time off request for ${dateLabel} has been ${actionWord} by ${reviewerName}.\n\n` +
       `Please reach out to Jess, Tara, or Quynh specifically for any additional questions.\n\n` +
-      `— 2653 Legacy Place`
+      `— 2653 Legacy Place Management`
 
     await sendEmail(existing.employee_email, subject, body)
   } catch (e) {

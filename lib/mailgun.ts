@@ -14,7 +14,7 @@ export async function sendEmail(to: string | string[], subject: string, text: st
   const mg = new Mailgun(FormData).client({ username: 'api', key, url })
 
   return mg.messages.create(process.env.MAILGUN_DOMAIN!, {
-    from: `2653 Legacy Place <noreply@${process.env.MAILGUN_DOMAIN}>`,
+    from: `2653 Legacy Place Management <noreply@${process.env.MAILGUN_DOMAIN}>`,
     to: Array.isArray(to) ? to : [to],
     subject,
     text,
