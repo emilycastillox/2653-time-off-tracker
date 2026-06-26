@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { differenceInCalendarDays, parseISO } from 'date-fns'
+import TimePicker, { type TimeVal, formatTime } from '@/app/components/TimePicker'
 
 const REASONS = [
   'Vacation',
@@ -12,45 +13,6 @@ const REASONS = [
   'Bereavement',
   'Other',
 ]
-
-const HOURS = ['1','2','3','4','5','6','7','8','9','10','11','12']
-const MINUTES = ['00','15','30','45']
-
-type TimeVal = { hour: string; minute: string; ampm: 'AM' | 'PM' }
-
-function formatTime(t: TimeVal) {
-  return `${t.hour}:${t.minute} ${t.ampm}`
-}
-
-function TimePicker({
-  label,
-  value,
-  onChange,
-}: {
-  label: string
-  value: TimeVal
-  onChange: (v: TimeVal) => void
-}) {
-  const base = 'border border-gray-300 rounded-md px-2 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <div className="flex items-center gap-1">
-        <select value={value.hour} onChange={e => onChange({ ...value, hour: e.target.value })} className={base}>
-          {HOURS.map(h => <option key={h}>{h}</option>)}
-        </select>
-        <span className="text-gray-500 font-medium">:</span>
-        <select value={value.minute} onChange={e => onChange({ ...value, minute: e.target.value })} className={base}>
-          {MINUTES.map(m => <option key={m}>{m}</option>)}
-        </select>
-        <select value={value.ampm} onChange={e => onChange({ ...value, ampm: e.target.value as 'AM' | 'PM' })} className={base}>
-          <option>AM</option>
-          <option>PM</option>
-        </select>
-      </div>
-    </div>
-  )
-}
 
 type RequestType = 'time_off' | 'time_restriction'
 
